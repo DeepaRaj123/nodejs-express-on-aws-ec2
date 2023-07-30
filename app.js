@@ -1,25 +1,28 @@
+'use strict';
 const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const config = require('./config');
+const enquiryRoutes = require('./routes/enquiry-routes');
+
+
+var MONGODB_URI =process.env.MONGODB_URI;
+
 const app = express();
-const port = 3000;
 
-app.get('/', (req, res) => {
-  res.send('<h1>Express Demo App</h1> <h4>Message: Success</h4> <p>Version 1.1</p>');
-})
+app.use(express.json());
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use('/', enquiryRoutes.routes);
 
-app.get('/products', (req, res) => {
-  res.send([
-    {
-      productId: '101',
-      price: 100
-    },
-    {
-      productId: '102',
-      price: 150
-    }
-  ])
+mongoose
+.connect(MONGODB_URI,{ useNewUrlParser: true,useUnifiedTopology: true})
+.then(result => {
+  console.log('App is listening on url http://localhost:' + config.port);
+  app.listen(process.env.port||config.port);
 })
-
-app.listen(port, ()=> {
-  console.log(`Demo app is up and listening to port: ${port}`);
-})
- 
+.catch(err => {
+  console.log(err);
+});
