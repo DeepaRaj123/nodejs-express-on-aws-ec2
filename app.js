@@ -14,7 +14,9 @@ const app = express();
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use('/', enquiryRoutes.routes);
+app.get('/', (req, res) => {
+  res.send('<h1>Express Demo App</h1> <h4>Message: Success</h4> <p>Version 1.1</p>');
+})
 
 mongoose
 .connect(MONGODB_URI,{ useNewUrlParser: true,useUnifiedTopology: true})
